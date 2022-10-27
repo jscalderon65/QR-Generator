@@ -10,10 +10,12 @@
             outlined
             required
           ></v-text-field>
-          <div class="form-button-container">
-            <v-btn outlined @click="createQr">
-              <v-icon>mdi-plus</v-icon>
-              Create QR
+          <div v-if="url" class="form-button-container">
+            <v-btn outlined @click="cleanUrl">
+              <v-icon style="margin-right: 10px"
+                >mdi-close-circle-outline</v-icon
+              >
+              Clean
             </v-btn>
           </div>
         </v-form>
@@ -23,8 +25,8 @@
       <img v-if="base64Url" class="qr-image" :src="base64Url" />
       <div class="qr-download-button-container" v-if="base64Url">
         <v-btn outlined @click="downloadImage">
-          <v-icon>mdi-download</v-icon>
-          Descargar</v-btn
+          <v-icon style="margin-right: 10px">mdi-download</v-icon>
+          Download</v-btn
         >
       </div>
     </div>
@@ -43,8 +45,16 @@ export default {
     loadingUrl: false,
     urlRules: [(v) => !!v || "Field required"],
   }),
-
+  watch: {
+    url() {
+      this.createQr();
+    },
+  },
   methods: {
+    cleanUrl() {
+      this.url = "";
+      this.base64Url = "";
+    },
     async createQr() {
       if (this.$refs.form.validate()) {
         try {
